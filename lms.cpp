@@ -1,6 +1,6 @@
 #include "lms.h"
 
-std::vector<double> lms_filter(std::vector<double>& input, std::vector<double>& noise){
+std::vector<double> lms_filter(std::vector<double>& input, std::vector<double>& noise, std::vector<double>& error_history){
     double mu = 0.0025;
     int order = 32;
     std::vector<double> weight_vector(32, 0);
@@ -22,6 +22,7 @@ std::vector<double> lms_filter(std::vector<double>& input, std::vector<double>& 
         }
 
         cleaned_signal[i] = input[i] - predicted_noise;
+        error_history[i] = (cleaned_signal[i] * cleaned_signal[i]);
 
         for (size_t k = 0; k < order; k++) {
             weight_vector[k] += mu_n * cleaned_signal[i] * noise[i - k];
