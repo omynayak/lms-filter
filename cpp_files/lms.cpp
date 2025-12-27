@@ -1,4 +1,4 @@
-#include "lms.h"
+#include "../headers/lms.h"
 
 std::vector<double> lms_filter(std::vector<double>& input, std::vector<double>& noise, std::vector<double>& error_history){
     double mu = 0.0025;

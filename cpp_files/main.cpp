@@ -1,7 +1,8 @@
 #include <iostream>
 #include <iomanip>
 #include <fstream>
-#include "lms.h"
+#include "../headers/lms.h"
+#include <cstdlib>
 
 /**
  * Simulates LMS filtering with uniformly distributed noise
@@ -43,6 +44,12 @@ void uniform_noise_sim(const std::vector<double>& reference, uint32_t n_samples)
         file << i << " " << error_history[i] << "\n";
     }
     file.close();
+
+    std::ofstream uniform("uniform.txt");
+    for(long i = 999000; i < 1000000; i++){
+        uniform << i << " " << noisy_signal[i] << " " << cleaned_signal[i] << "\n"; 
+    }
+    uniform.close();
     
     // Calculate final error after filtering
     double final_error = mean_squared_error(cleaned_signal, reference);
@@ -93,6 +100,12 @@ void awgn_sim(const std::vector<double>& reference, uint32_t n_samples) {
         file << i << " " << error_history[i] << "\n";
     }
     file.close();
+
+    std::ofstream gaussian("gaussian.txt");
+    for(int i = 999000; i < 1000000; i++){
+        gaussian << i << " " << noisy_signal[i] << " " << cleaned_signal[i] << "\n"; 
+    }
+    gaussian.close();
     
     // Calculate final error after filtering
     double final_error = mean_squared_error(cleaned_signal, reference);
@@ -127,5 +140,7 @@ int main(void) {
     // Test 2: Gaussian noise distribution (AWGN)
     awgn_sim(reference, n_samples);
     
+    system("python3 ./python_script/plot_convergence.py");
+    system("python3 ./python_script/plot_signals.py");
     return 0;
 }
