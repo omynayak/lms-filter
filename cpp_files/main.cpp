@@ -4,6 +4,33 @@
 #include "../headers/lms.h"
 #include <cstdlib>
 
+void moving_average(const std::vector<double>& cleaned_signal, int d){
+    std::vector<double> mov_a(cleaned_signal.size(), 0);
+    for(size_t i{4}; i < cleaned_signal.size() - 4; i++){
+        double term = cleaned_signal[i];
+        for(size_t j = 1; j < 5; j++){
+            term += cleaned_signal[i - j] + cleaned_signal[i + j];
+        }
+        mov_a[i] = term / 9.0;
+    }
+    if(d == 0){
+        std::ofstream uniform("ma_uniform.txt");
+        for(size_t i{999000}; i < cleaned_signal.size(); i++){
+            uniform << i << " " << mov_a[i] << "\n";
+        }
+        uniform.close();
+        return;
+    }
+
+    std::ofstream gaussian("ma_gaussian.txt");
+    for(size_t i{999000}; i < cleaned_signal.size(); i++){
+        gaussian << i << " " << mov_a[i] << "\n";
+    }
+    gaussian.close();
+    
+}
+
+
 /**
  * Simulates LMS filtering with uniformly distributed noise
  */
@@ -50,6 +77,8 @@ void uniform_noise_sim(const std::vector<double>& reference, uint32_t n_samples)
         uniform << i << " " << noisy_signal[i] << " " << cleaned_signal[i] << "\n"; 
     }
     uniform.close();
+
+    moving_average(cleaned_signal, 0);
     
     // Calculate final error after filtering
     double final_error = mean_squared_error(cleaned_signal, reference);
@@ -106,6 +135,8 @@ void awgn_sim(const std::vector<double>& reference, uint32_t n_samples) {
         gaussian << i << " " << noisy_signal[i] << " " << cleaned_signal[i] << "\n"; 
     }
     gaussian.close();
+
+    moving_average(cleaned_signal, 1);
     
     // Calculate final error after filtering
     double final_error = mean_squared_error(cleaned_signal, reference);

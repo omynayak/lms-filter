@@ -11,20 +11,20 @@ std::vector<double> lms_filter(std::vector<double>& input, std::vector<double>& 
     for(size_t i = order; i < n_samples; i++){
 
         double power = 1e-6;
-        for(size_t k = 0; k < order; k++){
+        for(int k = 0; k < order; k++){
             power += noise[i - k] * noise[i - k];
         }
 
         double mu_n = mu / power;
         double predicted_noise = 0;
-        for(size_t k = 0; k < order; k++){
+        for(int k = 0; k < order; k++){
             predicted_noise += weight_vector[k] * noise[i - k];
         }
 
         cleaned_signal[i] = input[i] - predicted_noise;
         error_history[i] = (cleaned_signal[i] * cleaned_signal[i]);
 
-        for (size_t k = 0; k < order; k++) {
+        for (int k = 0; k < order; k++) {
             weight_vector[k] += mu_n * cleaned_signal[i] * noise[i - k];
         }
     }
