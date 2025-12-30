@@ -14,7 +14,7 @@ void moving_average(const std::vector<double>& cleaned_signal, int d){
         mov_a[i] = term / 9.0;
     }
     if(d == 0){
-        std::ofstream uniform("ma_uniform.txt");
+        std::ofstream uniform("./data/ma_uniform.txt");
         for(size_t i{999000}; i < cleaned_signal.size(); i++){
             uniform << i << " " << mov_a[i] << "\n";
         }
@@ -22,7 +22,7 @@ void moving_average(const std::vector<double>& cleaned_signal, int d){
         return;
     }
 
-    std::ofstream gaussian("ma_gaussian.txt");
+    std::ofstream gaussian("./data/ma_gaussian.txt");
     for(size_t i{999000}; i < cleaned_signal.size(); i++){
         gaussian << i << " " << mov_a[i] << "\n";
     }
@@ -38,7 +38,6 @@ void uniform_noise_sim(const std::vector<double>& reference, uint32_t n_samples)
     // Initialize random number generator
     Xorshift32 rng(getpid());
     
-    std::vector<double> noise(n_samples);
     std::vector<double> noisy_signal(n_samples);
     std::vector<double> noise_reference(n_samples);
     std::vector<double> error_history(n_samples, 0);
@@ -46,13 +45,13 @@ void uniform_noise_sim(const std::vector<double>& reference, uint32_t n_samples)
     // Generate uniform noise and create noisy signal
     for (size_t i = 0; i < n_samples; i++) {
         // Uniform noise in range [-0.5, 0.5]
-        noise[i] = rng.next_double() - 0.5;
+        double noise = rng.next_double() - 0.5;
         
         // Create correlated noise reference (80% original noise + 20% new noise)
-        noise_reference[i] = 0.8 * noise[i] + 0.2 * (rng.next_double() - 0.5);
+        noise_reference[i] = 0.8 * noise + 0.2 * (rng.next_double() - 0.5);
         
         // Add noise to clean signal
-        noisy_signal[i] = reference[i] + noise[i];
+        noisy_signal[i] = reference[i] + noise;
     }
     
     std::cout << "FOR UNIFORMLY DISTRIBUTED NOISE\n";
@@ -66,13 +65,13 @@ void uniform_noise_sim(const std::vector<double>& reference, uint32_t n_samples)
     std::vector<double> cleaned_signal = lms_filter(noisy_signal, noise_reference, error_history);
     
     // Save error history to file for plotting
-    std::ofstream file("error_uniform.txt");
+    std::ofstream file("./data/error_uniform.txt");
     for (size_t i = 0; i < error_history.size(); i++) {
         file << i << " " << error_history[i] << "\n";
     }
     file.close();
 
-    std::ofstream uniform("uniform.txt");
+    std::ofstream uniform("./data/uniform.txt");
     for(long i = 999000; i < 1000000; i++){
         uniform << i << " " << noisy_signal[i] << " " << cleaned_signal[i] << "\n"; 
     }
@@ -96,7 +95,6 @@ void awgn_sim(const std::vector<double>& reference, uint32_t n_samples) {
     // Initialize Gaussian random number generator (mean=0, var=0.083)
     nd_rng rng(0, 0.08333333);
     
-    std::vector<double> noise(n_samples);
     std::vector<double> noisy_signal(n_samples);
     std::vector<double> noise_reference(n_samples);
     std::vector<double> error_history(n_samples, 0);
@@ -104,13 +102,13 @@ void awgn_sim(const std::vector<double>& reference, uint32_t n_samples) {
     // Generate Gaussian noise and create noisy signal
     for (size_t i = 0; i < n_samples; i++) {
         // Gaussian noise with zero mean
-        noise[i] = rng.next();
+        double noise = rng.next();
         
         // Create correlated noise reference (80% original noise + 20% new noise)
-        noise_reference[i] = 0.8 * noise[i] + 0.2 * rng.next();
+        noise_reference[i] = 0.8 * noise + 0.2 * rng.next();
         
         // Add noise to clean signal
-        noisy_signal[i] = reference[i] + noise[i];
+        noisy_signal[i] = reference[i] + noise;
     }
     
     std::cout << "FOR NORMALLY DISTRIBUTED NOISE\n";
@@ -124,13 +122,13 @@ void awgn_sim(const std::vector<double>& reference, uint32_t n_samples) {
     std::vector<double> cleaned_signal = lms_filter(noisy_signal, noise_reference, error_history);
     
     // Save error history to file for plotting
-    std::ofstream file("error_gaussian.txt");
+    std::ofstream file("./data/error_gaussian.txt");
     for (size_t i = 0; i < error_history.size(); i++) {
         file << i << " " << error_history[i] << "\n";
     }
     file.close();
 
-    std::ofstream gaussian("gaussian.txt");
+    std::ofstream gaussian("./data/gaussian.txt");
     for(int i = 999000; i < 1000000; i++){
         gaussian << i << " " << noisy_signal[i] << " " << cleaned_signal[i] << "\n"; 
     }

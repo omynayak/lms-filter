@@ -1,8 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-gaussian = np.loadtxt("error_gaussian.txt")
-uniform = np.loadtxt("error_uniform.txt")
+gaussian = np.loadtxt("./data/error_gaussian.txt")
+uniform = np.loadtxt("./data/error_uniform.txt")
 
 
 n_g, err_g = gaussian[:, 0], gaussian[:, 1]

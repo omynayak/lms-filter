@@ -1,14 +1,14 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-gaussian = np.loadtxt("gaussian.txt")
-uniform = np.loadtxt("uniform.txt")
+gaussian = np.loadtxt("./data/gaussian.txt")
+uniform = np.loadtxt("./data/uniform.txt")
 
 n_g, err_g, cl_g = gaussian[:, 0], gaussian[:, 1], gaussian[:, 2]
 n_u, err_u, cl_u = uniform[:, 0],  uniform[:, 1], uniform[:, 2]
 
-ma_g = np.loadtxt("ma_gaussian.txt")
-ma_u = np.loadtxt("ma_uniform.txt")
+ma_g = np.loadtxt("./data/ma_gaussian.txt")
+ma_u = np.loadtxt("./data/ma_uniform.txt")
 
 mag = ma_g[:, 1]
 mau = ma_u[:, 1]
